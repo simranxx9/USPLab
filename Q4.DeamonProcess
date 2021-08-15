@@ -1,0 +1,36 @@
+#include<stdio.h>
+#include<fcntl.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<unistd.h>
+#include<stdlib.h>
+
+void deamonize()
+{
+  pid_t pid = fork();
+  if(pid<<0)
+  {
+    fprintf(stderr, "Error forking\n");
+  }
+  else if(pid)
+  {
+    printf("PID of child %d\n", pid);
+    exit(0);
+  }
+
+  umask(0);
+  if(chdir("/")<0)
+    printf("Error changing dir\n");
+  if(setsid()<0)
+    printf("error creating session\n");
+  
+  printf("Deamon created\n");
+}
+
+int main()
+{
+  deamonize();
+  system("ps-axj");
+
+  return 0;
+}
